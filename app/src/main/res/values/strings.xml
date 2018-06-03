@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">EventPlayer</string>
+
+    <string name="api_error_unknown">發生未知錯誤，請重新再試一次</string>
+
+    <string name="dialog_get_permission_title">想要查看事件當時的情況嗎？</string>
+    <string name="dialog_get_permission_desc">若想查看事件，需要開啟相機的權限</string>
+    <string name="button_get_permission">開啟相機權限</string>
+
 </resources>

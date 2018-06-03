@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Padding & Margin-->
+    <dimen name="margin_tiny">4dp</dimen>
+    <dimen name="margin_smaller">6dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">10dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_big">20dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_super_large">40dp</dimen>
+
+    <dimen name="padding_super_tiny">1dp</dimen>
+    <dimen name="padding_tiny">4dp</dimen>
+    <dimen name="padding_smaller">6dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">10dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_big">20dp</dimen>
+    <dimen name="padding_large">30dp</dimen>
+    <dimen name="padding_super_large">40dp</dimen>
+
+    <!-- Radius -->
+    <dimen name="radius_8">8dp</dimen>
+    <dimen name="radius_20">20dp</dimen>
+
+    <!-- Text -->
+    <dimen name="text_size_20">20sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+
+    <!-- Height -->
+    <dimen name="height_20">20dp</dimen>
+    <dimen name="height_30">30dp</dimen>
+    <dimen name="height_40">40dp</dimen>
+    <dimen name="height_100">100dp</dimen>
+
+    <!-- Border -->
+    <dimen name="border_1">1dp</dimen>
+</resources>
