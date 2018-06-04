@@ -27,12 +27,14 @@
     <!-- Text -->
     <dimen name="text_size_20">20sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
 
     <!-- Height -->
     <dimen name="height_20">20dp</dimen>
     <dimen name="height_30">30dp</dimen>
     <dimen name="height_40">40dp</dimen>
-    <dimen name="height_100">100dp</dimen>
+    <dimen name="height_80">80dp</dimen>
 
     <!-- Border -->
     <dimen name="border_1">1dp</dimen>

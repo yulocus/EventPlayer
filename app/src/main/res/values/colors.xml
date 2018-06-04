@@ -4,7 +4,7 @@
     <color name="colorVideoBackground">#000000</color>
     <color name="colorPrimary">#2fceb9</color>
     <color name="colorPrimaryDark">#2fceb9</color>
-    <color name="colorPrimaryOverlay">#882fceb9</color>
+    <color name="colorPrimaryOverlay">#CC2fceb9</color>
     <color name="colorAccent">#fd726f</color>
     <color name="colorActionIcon">#3f3f3f</color>
     <color name="colorActionButtonNormal">#33ccb8</color>
@@ -14,5 +14,6 @@
     <color name="colorSecondaryText">#3f3f3f</color>
     <color name="colorRipple">#44ffffff</color>
     <color name="colorAlertBackground">#fd726f</color>
-    <color name="colorTickBackground">#3f3f3f</color>
+    <color name="colorRulerText">#ffffff</color>
+    <color name="colorRulerLine">#ffffff</color>
 </resources>

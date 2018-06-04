@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorVideoBackground"
     tools:context=".view.MainActivity">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,11 +15,11 @@
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimaryOverlay"
         />
-    <android.support.v7.widget.RecyclerView
+    <com.yulocus.eventplayer.widget.RulerRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_100"
-        android:layout_marginBottom="@dimen/margin_normal"
+        android:layout_height="@dimen/height_80"
+        android:layout_marginBottom="@dimen/margin_big"
         android:layout_alignParentBottom="true"
         />
 </RelativeLayout>

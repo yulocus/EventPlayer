@@ -1,26 +1,17 @@
 package com.yulocus.eventplayer.view
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
 import com.yulocus.eventplayer.R
-import com.yulocus.eventplayer.adapter.EventsAdapter
 import com.yulocus.eventplayer.base.MvpActivity
 import com.yulocus.eventplayer.bean.Alert
 import com.yulocus.eventplayer.contract.MainContract
 import com.yulocus.eventplayer.presenter.MainPresenter
 import com.yulocus.eventplayer.util.StatusBarUtils
+import com.yulocus.eventplayer.widget.RulerRecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
-
-    private val adapter by lazy {
-        EventsAdapter(object: EventsAdapter.ActionListener {
-            override fun onItemClickListener(alert: Alert) {
-                Timber.d(alert.title)
-            }
-        })
-    }
 
     override fun bindLayoutId(): Int = R.layout.activity_main
 
@@ -36,13 +27,14 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        val linearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
-        recycler_view.layoutManager = linearLayoutManager
-        recycler_view.adapter = adapter
+        recycler_view.setCallback(object: RulerRecyclerView.RulerResultCallback{
+            override fun setResult(result: Int) {
+                Timber.d("result=$result")
+            }
+        })
 
         // load events
-        presenter.loadEvents()
+//        presenter.loadEvents()
     }
 
     override fun initListener() {
@@ -57,7 +49,7 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
     }
 
     override fun showEvents(list: MutableList<Alert>) {
-        adapter.addEvents(list)
+//        adapter.addEvents(list)
     }
 
 }
