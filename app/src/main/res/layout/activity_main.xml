@@ -18,8 +18,7 @@
     <com.yulocus.eventplayer.widget.RulerRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_80"
-        android:layout_marginBottom="@dimen/margin_big"
+        android:layout_height="@dimen/height_60"
         android:layout_alignParentBottom="true"
         />
 </RelativeLayout>

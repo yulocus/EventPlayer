@@ -2,6 +2,7 @@ package com.yulocus.eventplayer.view
 
 import android.content.Context
 import com.yulocus.eventplayer.R
+import com.yulocus.eventplayer.adapter.RulerAdapter
 import com.yulocus.eventplayer.base.MvpActivity
 import com.yulocus.eventplayer.bean.Alert
 import com.yulocus.eventplayer.contract.MainContract
@@ -12,6 +13,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
+
+    private val adapter: RulerAdapter by lazy { RulerAdapter(this) }
 
     override fun bindLayoutId(): Int = R.layout.activity_main
 
@@ -27,6 +30,7 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
+        recycler_view.initRuler(this)
         recycler_view.setCallback(object: RulerRecyclerView.RulerResultCallback{
             override fun setResult(result: Int) {
                 Timber.d("result=$result")
@@ -34,7 +38,7 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
         })
 
         // load events
-//        presenter.loadEvents()
+        presenter.loadEvents()
     }
 
     override fun initListener() {
@@ -49,7 +53,7 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
     }
 
     override fun showEvents(list: MutableList<Alert>) {
-//        adapter.addEvents(list)
+        recycler_view.updateEvents(list)
     }
 
 }

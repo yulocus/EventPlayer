@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.WindowManager
 import com.yulocus.eventplayer.adapter.RulerAdapter
+import com.yulocus.eventplayer.bean.Alert
 
 class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(context, attrs) {
 
@@ -14,13 +15,10 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         private const val INTERVAL = 60
     }
 
-    init {
-        initialize(context)
-    }
-
+    private val adapter by lazy { RulerAdapter(context) }
     private var callback: RulerResultCallback? = null
 
-    private fun initialize(context: Context) {
+    fun initRuler(context: Context) {
 
         // horizontal layout manager
         val manager = LinearLayoutManager(context)
@@ -28,7 +26,6 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         layoutManager = manager
 
         // set adapter
-        val adapter = RulerAdapter(context)
         setAdapter(adapter)
 
         // screen width
@@ -47,6 +44,10 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         })
 
 //        manager.scrollToPositionWithOffset((adapter.itemCount + 1) / 2, width / 2)
+    }
+
+    fun updateEvents(list: MutableList<Alert>) {
+        adapter.addEvents(list)
     }
 
     fun setCallback(callback: RulerResultCallback) {
