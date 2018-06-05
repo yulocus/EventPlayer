@@ -31,6 +31,7 @@
     <dimen name="text_size_12">12sp</dimen>
 
     <!-- Height -->
+    <dimen name="height_5">5dp</dimen>
     <dimen name="height_10">10dp</dimen>
     <dimen name="height_20">20dp</dimen>
     <dimen name="height_30">30dp</dimen>
