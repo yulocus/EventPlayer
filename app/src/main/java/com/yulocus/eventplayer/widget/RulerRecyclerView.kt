@@ -22,7 +22,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
 
     companion object {
         private const val INTERVAL = 60
-        private const val PADDING = 5
+        private const val PADDING = 10
     }
 
     private val adapter by lazy { RulerAdapter(context) }
@@ -67,13 +67,13 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
                     } else {
                         eventX += dx
                     }
-                    Timber.d("eventX=$eventX")
+                    Timber.d("position=$currentPosition, eventX=$eventX")
                     val view = it.layoutManager.findViewByPosition(position)
                     view?.let {
                         val container = findViewById<LinearLayout>(R.id.ruler_event)
                         if(container.childCount > 0) {
                             container.forEachChild {
-                                if(Math.abs(it.x + PADDING) == Math.abs(eventX) || Math.abs(it.x - PADDING) == Math.abs(eventX)) {
+                                if(it.x + PADDING == Math.abs(eventX) || it.x - PADDING == Math.abs(eventX)) {
                                     callback?.setResult(it.tag as Alert)
                                 }
                             }

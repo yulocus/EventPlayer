@@ -37,12 +37,14 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
         recycler_view.initRuler(this)
         recycler_view.setCallback(object: RulerRecyclerView.RulerResultCallback{
             override fun setResult(alert: Alert) {
-                Glide.with(this@MainActivity)
-                        .load(alert.image)
-                        .dontAnimate()
-                        .centerCrop()
-                        .into(image_preview)
-                image_preview.visibility = View.VISIBLE
+                runOnUiThread({
+                    Glide.with(this@MainActivity)
+                            .load(alert.image)
+                            .dontAnimate()
+                            .centerCrop()
+                            .into(image_preview)
+                    image_preview.visibility = View.VISIBLE
+                })
                 //video_player.setVideoURI(Uri.parse(alert.video))
                 //video_player.start()
             }

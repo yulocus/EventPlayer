@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import com.yulocus.eventplayer.R
 import com.yulocus.eventplayer.bean.Alert
 import kotlinx.android.synthetic.main.layout_ruler_item.view.*
+import timber.log.Timber
 import java.text.DecimalFormat
 import java.util.*
 
@@ -55,8 +56,8 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
                 // set time range of this item
                 val startTime = Calendar.getInstance()
                 val endTime = Calendar.getInstance()
-                startTime.add(Calendar.HOUR, -position)
-                endTime.add(Calendar.HOUR, -position-1)
+                startTime.add(Calendar.HOUR, position)
+                endTime.add(Calendar.HOUR, position-1)
 
                 // draw scale
                 when(position) {
@@ -77,6 +78,10 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
                 if(alerts.size > 0) {
                     ruler_event.removeAllViews()
                     alerts.forEach {
+                        // 1527809697
+                        // 1527805971
+                        // 1527802365
+                        // 1527798758
                         if (it.ts <= startTime.timeInMillis / 1000L && it.ts > endTime.timeInMillis / 1000L) { // in range
                             val eventTime = Calendar.getInstance()
                             eventTime.timeInMillis = it.ts
@@ -94,6 +99,7 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
                             eventDot.y = eventY.toFloat()
                             eventDot.tag = it
                             ruler_event.addView(eventDot)
+                            Timber.d("position=$position, timestamp=${eventTime.timeInMillis}, eventX=$eventX")
                         }
                     }
                 }
