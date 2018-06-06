@@ -1,16 +1,20 @@
 package com.yulocus.eventplayer.widget
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.yulocus.eventplayer.R
 import com.yulocus.eventplayer.adapter.RulerAdapter
 import com.yulocus.eventplayer.bean.Alert
+import com.yulocus.eventplayer.util.RulerItemDecoration
 import org.jetbrains.anko.forEachChild
 import timber.log.Timber
 
@@ -32,19 +36,19 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         // horizontal layout manager
         val manager = LinearLayoutManager(context)
         manager.orientation = LinearLayoutManager.HORIZONTAL
+        manager.reverseLayout = true
         layoutManager = manager
 
         // set adapter
         setAdapter(adapter)
 
         // screen width
+        val metrics = DisplayMetrics()
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val display = windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
-        val screenWidth = size.x
-        val screenHeight = size.y
+        windowManager.defaultDisplay.getMetrics(metrics)
+        addItemDecoration(RulerItemDecoration())
 
+        // build ruler size
         val params = RelativeLayout.LayoutParams(context.resources.getDimensionPixelSize(R.dimen.height_80) * 6, context.resources.getDimensionPixelSize(R.dimen.height_80))
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         params.addRule(RelativeLayout.CENTER_HORIZONTAL)
@@ -56,7 +60,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
                 recyclerView?.let {
                     scrollX += dx
                     // calculate event position
-                    val position = (scrollX / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
+                    val position = (Math.abs(scrollX) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
                     if(position != currentPosition) {
                         eventX = 0f
                         currentPosition = position
@@ -69,7 +73,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
                         val container = findViewById<LinearLayout>(R.id.ruler_event)
                         if(container.childCount > 0) {
                             container.forEachChild {
-                                if(it.x + PADDING == eventX || it.x - PADDING == eventX) {
+                                if(Math.abs(it.x + PADDING) == Math.abs(eventX) || Math.abs(it.x - PADDING) == Math.abs(eventX)) {
                                     callback?.setResult(it.tag as Alert)
                                 }
                             }
@@ -78,8 +82,6 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
                 }
             }
         })
-
-//        manager.scrollToPositionWithOffset((adapter.itemCount + 1) / 2, width / 2)
     }
 
     fun updateEvents(list: MutableList<Alert>) {

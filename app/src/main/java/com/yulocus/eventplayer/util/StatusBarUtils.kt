@@ -1,6 +1,7 @@
 package com.yulocus.eventplayer.util
 
 import android.app.Activity
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 

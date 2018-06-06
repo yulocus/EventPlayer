@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import com.yulocus.eventplayer.R
 import com.yulocus.eventplayer.bean.Alert
 import kotlinx.android.synthetic.main.layout_ruler_item.view.*
+import java.text.DecimalFormat
 import java.util.*
 
 class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdapter.ViewHolder>() {
@@ -60,12 +61,13 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
                 // draw scale
                 when(position) {
                     0 -> {
-                        ruler_label.text = "Live"
+                        ruler_label.text = context.resources.getString(R.string.live)
                         ruler_label.visibility = View.VISIBLE
                     }
                     else -> {
+                        val df = DecimalFormat("#00")
                         val unit = if(startTime.get(Calendar.AM_PM) == Calendar.AM) "AM" else "PM"
-                        val label = "${startTime.get(Calendar.HOUR_OF_DAY)} $unit"
+                        val label = "${df.format(startTime.get(Calendar.HOUR_OF_DAY))} $unit"
                         ruler_label.text = label
                         ruler_label.visibility = View.VISIBLE
                     }

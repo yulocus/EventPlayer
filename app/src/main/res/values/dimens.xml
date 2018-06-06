@@ -38,7 +38,9 @@
     <dimen name="height_40">40dp</dimen>
     <dimen name="height_60">60dp</dimen>
     <dimen name="height_80">80dp</dimen>
+    <dimen name="height_110">110dp</dimen>
 
     <!-- Border -->
     <dimen name="border_1">1dp</dimen>
+    <dimen name="border_2">2dp</dimen>
 </resources>

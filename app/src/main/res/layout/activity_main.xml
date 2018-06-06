@@ -35,7 +35,30 @@
     <com.yulocus.eventplayer.widget.RulerRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_60"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         />
+    <RelativeLayout
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_110"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+        <View
+            android:layout_width="@dimen/border_2"
+            android:layout_height="@dimen/height_80"
+            android:background="@color/colorPrimary"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            />
+        <ImageView
+            android:layout_width="@dimen/height_20"
+            android:layout_height="@dimen/height_20"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_play_indicator"
+            android:background="@drawable/play_background"
+            />
+    </RelativeLayout>
 </RelativeLayout>

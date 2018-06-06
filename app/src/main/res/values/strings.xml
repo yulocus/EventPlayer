@@ -7,4 +7,5 @@
     <string name="dialog_get_permission_desc">若想查看事件，需要開啟相機的權限</string>
     <string name="button_get_permission">開啟相機權限</string>
 
+    <string name="live">Live</string>
 </resources>
