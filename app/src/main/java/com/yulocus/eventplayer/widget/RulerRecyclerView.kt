@@ -1,14 +1,9 @@
 package com.yulocus.eventplayer.widget
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Point
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.LinearSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.util.DisplayMetrics
-import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.yulocus.eventplayer.R
@@ -32,6 +27,9 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
     private var currentPosition = 0
 
     fun initRuler(context: Context) {
+        val itemWidth = context.resources.getDimensionPixelSize(R.dimen.height_80)
+        val controllerWidth = itemWidth * 6 // show 6 hours
+        val controllerHeight = context.resources.getDimensionPixelSize(R.dimen.height_80)
 
         // horizontal layout manager
         val manager = LinearLayoutManager(context)
@@ -41,47 +39,16 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
 
         // set adapter
         setAdapter(adapter)
-
-        // screen width
-        val metrics = DisplayMetrics()
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        windowManager.defaultDisplay.getMetrics(metrics)
         addItemDecoration(RulerItemDecoration())
 
         // build ruler size
-        val params = RelativeLayout.LayoutParams(context.resources.getDimensionPixelSize(R.dimen.height_80) * 6, context.resources.getDimensionPixelSize(R.dimen.height_80))
+        val params = RelativeLayout.LayoutParams(controllerWidth, controllerHeight)
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         params.addRule(RelativeLayout.CENTER_HORIZONTAL)
         layoutParams = params
 
-        addOnScrollListener(object: OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                recyclerView?.let {
-                    scrollX += dx
-                    // calculate event position
-                    val position = (Math.abs(scrollX) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
-                    if(position != currentPosition) {
-                        eventX = 0f
-                        currentPosition = position
-                    } else {
-                        eventX += dx
-                    }
-                    Timber.d("position=$currentPosition, eventX=$eventX")
-                    val view = it.layoutManager.findViewByPosition(position)
-                    view?.let {
-                        val container = findViewById<LinearLayout>(R.id.ruler_event)
-                        if(container.childCount > 0) {
-                            container.forEachChild {
-                                if(it.x + PADDING == Math.abs(eventX) || it.x - PADDING == Math.abs(eventX)) {
-                                    callback?.setResult(it.tag as Alert)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        })
+        removeOnScrollListener(scrollListener)
+        addOnScrollListener(scrollListener)
     }
 
     fun updateEvents(list: MutableList<Alert>) {
@@ -90,6 +57,35 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
 
     fun setCallback(callback: RulerResultCallback) {
         this.callback = callback
+    }
+
+    private val scrollListener = object: OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            recyclerView?.let {
+                scrollX += dx
+                // calculate event position
+                val position = (Math.abs(scrollX) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
+                if(position != currentPosition) {
+                    eventX = 0f
+                    currentPosition = position
+                } else {
+                    eventX += dx
+                }
+                Timber.d("position=$currentPosition, eventX=$eventX")
+                val view = it.layoutManager.findViewByPosition(position)
+                view?.let {
+                    val container = it.findViewById<LinearLayout>(R.id.ruler_event)
+                    if(container.childCount > 0) {
+                        container.forEachChild {
+                            if(it.x + PADDING == Math.abs(eventX) || it.x - PADDING == Math.abs(eventX)) {
+                                callback?.setResult(it.tag as Alert)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     interface RulerResultCallback {

@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context=".view.MainActivity">
     <RelativeLayout
+        android:id="@+id/layout_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ImageView
@@ -17,13 +18,24 @@
             android:background="@color/colorVideoBackground"
             android:scaleType="centerCrop"
             />
+        <ImageView
+            android:id="@+id/button_play_video"
+            android:layout_width="@dimen/height_60"
+            android:layout_height="@dimen/height_60"
+            android:layout_centerInParent="true"
+            android:background="@drawable/play_video_background"
+            android:src="@drawable/ic_action_play_video"
+            android:visibility="gone"
+            />
     </RelativeLayout>
-    <VideoView
+    <com.jarvanmo.exoplayerview.ui.ExoVideoView
         android:id="@+id/video_player"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:visibility="gone"
+        app:resize_mode="fill"
+        app:controller_display_mode="none"
         />
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

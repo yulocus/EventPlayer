@@ -89,4 +89,7 @@ dependencies {
     implementation "nz.bradcampbell:paperparcel:$paper_parcel_version"
     implementation "nz.bradcampbell:paperparcel-kotlin:$paper_parcel_version"
     kapt "nz.bradcampbell:paperparcel-compiler:$paper_parcel_version"
+
+    // exo player
+    implementation 'com.jarvanmo:exoplayerview:2.0.7'
 }

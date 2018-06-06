@@ -18,6 +18,7 @@ import java.util.*
 class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdapter.ViewHolder>() {
 
     companion object {
+        private const val MINUTE_INTERVAL = 60 // 60 minutes
         private const val TIME_INTERVAL = 3600000.toLong() // 1 hour
     }
 
@@ -27,7 +28,7 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
     init {
         val startTime = Calendar.getInstance()
         val endTime = Calendar.getInstance()
-        endTime.add(Calendar.DATE, -30)
+        endTime.add(Calendar.DATE, -30) // limit 30 days
         rulerCount = ((startTime.timeInMillis - endTime.timeInMillis) / TIME_INTERVAL).toInt() + 1
     }
 
@@ -51,13 +52,14 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
         fun bind(position: Int) {
             with(itemView) {
                 // set item width
-                layoutParams = RelativeLayout.LayoutParams(context.resources.getDimensionPixelSize(R.dimen.height_80), context.resources.getDimensionPixelSize(R.dimen.height_80))
+                val itemWidth = context.resources.getDimensionPixelSize(R.dimen.height_80)
+                layoutParams = RelativeLayout.LayoutParams(itemWidth, itemWidth)
 
                 // set time range of this item
                 val startTime = Calendar.getInstance()
                 val endTime = Calendar.getInstance()
-                startTime.add(Calendar.HOUR, position)
-                endTime.add(Calendar.HOUR, position-1)
+                startTime.add(Calendar.HOUR, -position + 1)
+                endTime.add(Calendar.HOUR, -position)
 
                 // draw scale
                 when(position) {
@@ -78,28 +80,28 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
                 if(alerts.size > 0) {
                     ruler_event.removeAllViews()
                     alerts.forEach {
-                        // 1527809697
-                        // 1527805971
-                        // 1527802365
-                        // 1527798758
+                        // 1527809697 - 07:34
+                        // 1527805971 - 06:32
+                        // 1527802365 - 05:32
+                        // 1527798758 - 20:32
                         if (it.ts <= startTime.timeInMillis / 1000L && it.ts > endTime.timeInMillis / 1000L) { // in range
                             val eventTime = Calendar.getInstance()
                             eventTime.timeInMillis = it.ts
                             val eventMinute = eventTime.get(Calendar.MINUTE)
-                            val eventX = context.resources.getDimensionPixelSize(R.dimen.height_80) / 60 * eventMinute
-                            val eventY = context.resources.getDimensionPixelSize(R.dimen.height_5)
-                            val eventDot = LayoutInflater.from(context).inflate(R.layout.layout_event_dot, null)
                             val params = LinearLayout.LayoutParams(
                                     context.resources.getDimensionPixelSize(R.dimen.height_10),
                                     context.resources.getDimensionPixelSize(R.dimen.height_10)
                             )
                             params.gravity = Gravity.TOP and Gravity.CENTER_HORIZONTAL
+
+                            // draw event dot
+                            val eventDot = LayoutInflater.from(context).inflate(R.layout.layout_event_dot, null)
                             eventDot.layoutParams = params
-                            eventDot.x = eventX.toFloat()
-                            eventDot.y = eventY.toFloat()
+                            eventDot.x = (itemWidth - itemWidth / MINUTE_INTERVAL * eventMinute).toFloat()
+                            eventDot.y = (context.resources.getDimensionPixelSize(R.dimen.height_5)).toFloat()
                             eventDot.tag = it
                             ruler_event.addView(eventDot)
-                            Timber.d("position=$position, timestamp=${eventTime.timeInMillis}, eventX=$eventX")
+                            Timber.d("position=$position, timestamp=${eventTime.timeInMillis}, eventX=${eventDot.x}")
                         }
                     }
                 }
