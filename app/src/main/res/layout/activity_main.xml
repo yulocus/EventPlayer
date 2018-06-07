@@ -43,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="@color/colorPrimaryOverlay"
+        android:visibility="gone"
         />
     <com.yulocus.eventplayer.widget.RulerRecyclerView
         android:id="@+id/recycler_view"

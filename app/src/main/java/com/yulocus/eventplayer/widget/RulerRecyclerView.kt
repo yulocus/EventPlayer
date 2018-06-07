@@ -16,7 +16,7 @@ import timber.log.Timber
 class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(context, attrs) {
 
     private val adapter by lazy { RulerAdapter(context) }
-    private var callback: RulerResultCallback? = null
+    private var callback: EventCallback? = null
     private var scrollX = 0L
     private var eventX = 0f
     private var currentPosition = 0
@@ -51,7 +51,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         adapter.addEvents(list)
     }
 
-    fun setCallback(callback: RulerResultCallback) {
+    fun setCallback(callback: EventCallback) {
         this.callback = callback
     }
 
@@ -83,7 +83,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
                             val point = Math.abs(eventX) + dotPadding
                             if(it.x == point) { // in range
                                 Timber.d("find event point=$point, x=${it.x}")
-                                it.tag?.let { callback?.setResult(it as Alert) }
+                                it.tag?.let { callback?.setEvent(it as Alert) }
                             }
                         }
                     }
@@ -92,7 +92,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         }
     }
 
-    interface RulerResultCallback {
-        fun setResult(alert: Alert)
+    interface EventCallback {
+        fun setEvent(alert: Alert)
     }
 }

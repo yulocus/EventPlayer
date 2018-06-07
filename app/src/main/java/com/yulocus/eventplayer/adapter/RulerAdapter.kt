@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.yulocus.eventplayer.R
-import com.yulocus.eventplayer.R.id.ruler_event
 import com.yulocus.eventplayer.bean.Alert
 import kotlinx.android.synthetic.main.layout_ruler_item.view.*
 import timber.log.Timber

@@ -2,11 +2,6 @@ package com.yulocus.eventplayer.view
 
 import android.content.Context
 import android.view.View
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.GlideDrawable
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.jakewharton.rxbinding2.view.RxView
 import com.jarvanmo.exoplayerview.media.SimpleMediaSource
 import com.yulocus.eventplayer.R
 import com.yulocus.eventplayer.base.MvpActivity
@@ -17,17 +12,13 @@ import com.yulocus.eventplayer.util.StatusBarUtils
 import com.yulocus.eventplayer.widget.RulerRecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
-import java.lang.Exception
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
 
     companion object {
         private const val REFRESH_TIME = 5 * 60 * 60 * 1000L // 5 minutes
     }
-
-    private lateinit var mediaSource: SimpleMediaSource
 
     override fun bindLayoutId(): Int = R.layout.activity_main
 
@@ -39,31 +30,35 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
 
     override fun initView() {
         // toolbar
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+//        setSupportActionBar(toolbar)
+//        supportActionBar?.setDisplayShowTitleEnabled(false)
+//        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        recycler_view.setCallback(object: RulerRecyclerView.RulerResultCallback{
-            override fun setResult(alert: Alert) {
-                button_play_video.visibility = View.GONE
-                mediaSource = SimpleMediaSource(alert.video)
-                Glide.with(this@MainActivity)
-                        .load(alert.image)
-                        .dontAnimate()
-                        .centerCrop()
-                        .listener(object: RequestListener<String, GlideDrawable> {
-                            override fun onException(e: Exception?, model: String?, target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
-                                e?.let { Timber.d("${it.message}") }
-                                return false
-                            }
 
-                            override fun onResourceReady(resource: GlideDrawable?, model: String?, target: Target<GlideDrawable>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
-                                image_preview.visibility = View.VISIBLE
-                                button_play_video.visibility = View.VISIBLE
-                                return false
-                            }
-                        })
-                        .into(image_preview)
+        recycler_view.setCallback(object: RulerRecyclerView.EventCallback {
+            override fun setEvent(alert: Alert) {
+                runOnUiThread({
+                    video_player.visibility = View.VISIBLE
+                    val mediaSource = SimpleMediaSource(alert.video)
+                    video_player.play(mediaSource, true)
+                })
+//                Glide.with(this@MainActivity)
+//                        .load(alert.image)
+//                        .dontAnimate()
+//                        .centerCrop()
+//                        .listener(object: RequestListener<String, GlideDrawable> {
+//                            override fun onException(e: Exception?, model: String?, target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
+//                                e?.let { Timber.d("${it.message}") }
+//                                return false
+//                            }
+//
+//                            override fun onResourceReady(resource: GlideDrawable?, model: String?, target: Target<GlideDrawable>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
+//                                image_preview.visibility = View.VISIBLE
+//                                button_play_video.visibility = View.VISIBLE
+//                                return false
+//                            }
+//                        })
+//                        .into(image_preview)
             }
         })
 
@@ -78,13 +73,13 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
     }
 
     override fun initListener() {
-        RxView.clicks(button_play_video)
-                .throttleFirst(1, TimeUnit.SECONDS)
-                .subscribe{
-                    layout_preview.visibility = View.GONE
-                    video_player.visibility = View.VISIBLE
-                    video_player.play(mediaSource, true)
-                }
+//        RxView.clicks(button_play_video)
+//                .throttleFirst(1, TimeUnit.SECONDS)
+//                .subscribe{
+//                    layout_preview.visibility = View.GONE
+//                    video_player.visibility = View.VISIBLE
+//                    video_player.play(mediaSource, true)
+//                }
     }
 
     override fun showLoading(isLoading: Boolean) {
