@@ -15,11 +15,6 @@ import timber.log.Timber
 
 class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(context, attrs) {
 
-    companion object {
-        private const val INTERVAL = 60
-        private const val PADDING = 10
-    }
-
     private val adapter by lazy { RulerAdapter(context) }
     private var callback: RulerResultCallback? = null
     private var scrollX = 0L
@@ -40,6 +35,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         // set adapter
         setAdapter(adapter)
         addItemDecoration(RulerItemDecoration())
+        adapter.scrollToLive(manager)
 
         // build ruler size
         val params = RelativeLayout.LayoutParams(controllerWidth, controllerHeight)
@@ -63,23 +59,31 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             recyclerView?.let {
-                scrollX += dx
+                if(dx >= 0) { // to left
+                    scrollX -= Math.abs(dx)
+                } else { // to right
+                    scrollX += Math.abs(dx)
+                }
+
                 // calculate event position
-                val position = (Math.abs(scrollX) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
+                val offset = context.resources.getDimensionPixelSize(R.dimen.height_80) - adapter.getLiveOffset() // live offset
+                val position = ((scrollX + offset) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
                 if(position != currentPosition) {
                     eventX = 0f
                     currentPosition = position
                 } else {
                     eventX += dx
                 }
-                Timber.d("position=$currentPosition, eventX=$eventX")
+                val dotPadding = context.resources.getDimensionPixelSize(R.dimen.height_15)
                 val view = it.layoutManager.findViewByPosition(position)
                 view?.let {
                     val container = it.findViewById<LinearLayout>(R.id.ruler_event)
                     if(container.childCount > 0) {
                         container.forEachChild {
-                            if(it.x + PADDING == Math.abs(eventX) || it.x - PADDING == Math.abs(eventX)) {
-                                callback?.setResult(it.tag as Alert)
+                            val point = Math.abs(eventX) + dotPadding
+                            if(it.x == point) { // in range
+                                Timber.d("find event point=$point, x=${it.x}")
+                                it.tag?.let { callback?.setResult(it as Alert) }
                             }
                         }
                     }

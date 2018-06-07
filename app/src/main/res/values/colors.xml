@@ -15,6 +15,7 @@
     <color name="colorSecondaryText">#3f3f3f</color>
     <color name="colorRipple">#44ffffff</color>
     <color name="colorAlertBackground">#fd726f</color>
+    <color name="colorLiveBackground">#2fceb9</color>
     <color name="colorRulerText">#ffffff</color>
     <color name="colorRulerLine">#ffffff</color>
 </resources>

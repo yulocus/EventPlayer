@@ -46,28 +46,24 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
         recycler_view.setCallback(object: RulerRecyclerView.RulerResultCallback{
             override fun setResult(alert: Alert) {
                 button_play_video.visibility = View.GONE
-                runOnUiThread({
-                    mediaSource = SimpleMediaSource(alert.video)
-                    Glide.with(this@MainActivity)
-                            .load(alert.image)
-                            .dontAnimate()
-                            .centerCrop()
-                            .listener(object: RequestListener<String, GlideDrawable> {
-                                override fun onException(e: Exception?, model: String?, target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
-                                    e?.let { Timber.d("${it.message}") }
-                                    return false
-                                }
+                mediaSource = SimpleMediaSource(alert.video)
+                Glide.with(this@MainActivity)
+                        .load(alert.image)
+                        .dontAnimate()
+                        .centerCrop()
+                        .listener(object: RequestListener<String, GlideDrawable> {
+                            override fun onException(e: Exception?, model: String?, target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
+                                e?.let { Timber.d("${it.message}") }
+                                return false
+                            }
 
-                                override fun onResourceReady(resource: GlideDrawable?, model: String?, target: Target<GlideDrawable>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
-                                    image_preview.visibility = View.VISIBLE
-                                    button_play_video.visibility = View.VISIBLE
-                                    return false
-                                }
-                            })
-                            .into(image_preview)
-                })
-                //video_player.setVideoURI(Uri.parse(alert.video))
-                //video_player.start()
+                            override fun onResourceReady(resource: GlideDrawable?, model: String?, target: Target<GlideDrawable>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
+                                image_preview.visibility = View.VISIBLE
+                                button_play_video.visibility = View.VISIBLE
+                                return false
+                            }
+                        })
+                        .into(image_preview)
             }
         })
 
