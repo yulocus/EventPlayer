@@ -33,8 +33,8 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         setAdapter(adapter)
         addItemDecoration(RulerItemDecoration())
         // draw and scroll to live dot
-        adapter.notifyItemChanged(0)
-        adapter.scrollToLive(manager)
+//        adapter.notifyItemChanged(0)
+//        adapter.scrollToLive(manager)
 
         // build ruler size
         val params = RelativeLayout.LayoutParams(controllerWidth, controllerHeight)
@@ -72,34 +72,32 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             recyclerView?.let {
-                if(dx > 0) { // to left
-                    scrollX -= Math.abs(dx)
-                } else if(dx < 0) { // to right
-                    scrollX += Math.abs(dx)
-                }
+                scrollX += dx
 
                 // calculate event position
-                val offset = context.resources.getDimensionPixelSize(R.dimen.height_80) - adapter.getLiveOffset() // live offset
-                val position = ((scrollX) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
+                val position = (Math.abs(scrollX) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
                 if(position != currentPosition) {
                     eventX = 0f
                     currentPosition = position
                 } else {
-                    eventX += dx
+                    eventX = scrollX.toFloat() % context.resources.getDimensionPixelSize(R.dimen.height_80).toLong()
                 }
+
+                Timber.d("get scrollX=$scrollX, eventX=$eventX, position=$position")
             }
         }
 
         private fun checkEvent(recyclerView: RecyclerView) {
-            val itemWidth = context.resources.getDimensionPixelOffset(R.dimen.height_80)
-            val view = recyclerView.layoutManager.findViewByPosition(currentPosition+1)
+            val padding = context.resources.getDimensionPixelSize(R.dimen.height_5)
+            val itemWidth = context.resources.getDimensionPixelSize(R.dimen.height_80)
+            val view = recyclerView.layoutManager.findViewByPosition(currentPosition)
             view?.let {
                 val container = it.findViewById<LinearLayout>(R.id.ruler_event)
                 if(container.childCount > 0) {
                     container.forEachChild {
-                        val currentX = itemWidth - Math.abs(eventX)
+                        val currentX = itemWidth - Math.abs(eventX) - padding
                         if(it.x >= currentX - 10 && it.x <= currentX + 10) { // in range
-                            Timber.d("find currentX=$currentX, eventX=${it.x}")
+                            Timber.d("find eventX=$eventX, x=${it.x}")
                             it.tag?.let { callback?.setEvent(it as Alert) }
                         }
                     }
