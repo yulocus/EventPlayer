@@ -17,7 +17,7 @@ import java.util.*
 class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
 
     companion object {
-        private const val REFRESH_TIME = 5 * 60 * 60 * 1000L // 5 minutes
+        private const val REFRESH_TIME = 1 * 60 * 60 * 1000L // 5 minutes
     }
 
     override fun bindLayoutId(): Int = R.layout.activity_main
@@ -34,8 +34,11 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
 //        supportActionBar?.setDisplayShowTitleEnabled(false)
 //        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-
         recycler_view.setCallback(object: RulerRecyclerView.EventCallback {
+            override fun stopVideo() {
+                video_player.stop()
+            }
+
             override fun setEvent(alert: Alert) {
                 runOnUiThread({
                     video_player.visibility = View.VISIBLE

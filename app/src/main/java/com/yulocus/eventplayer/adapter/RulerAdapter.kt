@@ -104,7 +104,7 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
             eventDot.tag = alert
             ruler_event.addView(eventDot)
 
-            Timber.d("event x position=${eventDot.x}")
+            Timber.d("eventX=${eventDot.x}")
         }
     }
 
@@ -145,6 +145,7 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
                         // 1527798758 - 20:32
                         if (it.ts <= startTime.timeInMillis / 1000L && it.ts > endTime.timeInMillis / 1000L) { // in range
                             drawEventDot(this, it)
+                            Timber.d("eventPosition=$position")
                         }
                     }
                 }
