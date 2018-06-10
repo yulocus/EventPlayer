@@ -49,13 +49,14 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
         notifyDataSetChanged()
     }
 
-    fun scrollToLive(manager: LinearLayoutManager) {
+    fun scrollToLive(manager: LinearLayoutManager): Int {
         // calculate offset distance
         val itemWidth = context.resources.getDimensionPixelSize(R.dimen.height_80)
         val liveTime = Calendar.getInstance()
         val liveMinute = liveTime.get(Calendar.MINUTE)
         val liveOffset = itemWidth - itemWidth / MINUTE_INTERVAL * liveMinute
         manager.scrollToPositionWithOffset(0, -liveOffset)
+        return -liveOffset
     }
 
     fun getLiveOffset(): Float {

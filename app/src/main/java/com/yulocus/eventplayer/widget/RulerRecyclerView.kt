@@ -17,6 +17,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
 
     private val adapter by lazy { RulerAdapter(context) }
     private var callback: EventCallback? = null
+    private var liveOffset = 0
 
     fun initRuler(context: Context) {
         val itemWidth = context.resources.getDimensionPixelSize(R.dimen.height_80)
@@ -33,8 +34,7 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         setAdapter(adapter)
         addItemDecoration(RulerItemDecoration())
         // draw and scroll to live dot
-//        adapter.notifyItemChanged(0)
-//        adapter.scrollToLive(manager)
+        liveOffset = adapter.scrollToLive(manager)
 
         // build ruler size
         val params = RelativeLayout.LayoutParams(controllerWidth, controllerHeight)
@@ -75,12 +75,12 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
                 scrollX += dx
 
                 // calculate event position
-                val position = (Math.abs(scrollX) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
+                val position = ((Math.abs(scrollX + liveOffset)) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
                 if(position != currentPosition) {
                     eventX = 0f
                     currentPosition = position
                 } else {
-                    eventX = scrollX.toFloat() % context.resources.getDimensionPixelSize(R.dimen.height_80).toLong()
+                    eventX = (scrollX.toFloat() + liveOffset) % context.resources.getDimensionPixelSize(R.dimen.height_80).toLong()
                 }
 
                 Timber.d("get scrollX=$scrollX, eventX=$eventX, position=$position")
