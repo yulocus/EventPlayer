@@ -12,6 +12,8 @@ import android.widget.RelativeLayout
 import com.yulocus.eventplayer.R
 import com.yulocus.eventplayer.bean.Alert
 import kotlinx.android.synthetic.main.layout_ruler_item.view.*
+import org.jetbrains.anko.firstChild
+import org.jetbrains.anko.forEachChild
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.util.*
@@ -49,14 +51,50 @@ class RulerAdapter(private val context: Context): RecyclerView.Adapter<RulerAdap
         notifyDataSetChanged()
     }
 
-    fun scrollToLive(manager: LinearLayoutManager): Int {
-        // calculate offset distance
+    fun scrollToClosestEvent(recyclerView: RecyclerView, position: Int, currentX: Float) {
         val itemWidth = context.resources.getDimensionPixelSize(R.dimen.height_80)
-        val liveTime = Calendar.getInstance()
-        val liveMinute = liveTime.get(Calendar.MINUTE)
-        val liveOffset = itemWidth - itemWidth / MINUTE_INTERVAL * liveMinute
-        manager.scrollToPositionWithOffset(0, -liveOffset)
-        return -liveOffset
+        val middle = getSmallestOffset(recyclerView, position, currentX)
+        val left = itemWidth - getSmallestOffset(recyclerView, position + 1, currentX)
+        val right = itemWidth - getSmallestOffset(recyclerView, position - 1, currentX)
+        when {
+            left > 0f && Math.abs(left) < Math.abs(middle) -> recyclerView.smoothScrollBy(-left.toInt(), 0)
+            right > 0 && Math.abs(right) < Math.abs(middle) -> recyclerView.scrollBy(right.toInt(), 0)
+            middle == 0f -> {
+                when {
+                    left > 0f && Math.abs(left) < Math.abs(right) -> recyclerView.smoothScrollBy(-left.toInt(), 0)
+                    right > 0f && Math.abs(right) < Math.abs(left) -> recyclerView.smoothScrollBy(right.toInt(), 0)
+                    else -> recyclerView.smoothScrollBy(0, 0)
+                }
+            }
+            else -> recyclerView.smoothScrollBy(middle.toInt(), 0)
+        }
+    }
+
+    private fun getSmallestOffset(recyclerView: RecyclerView, position: Int, currentX: Float): Float {
+        var changeOffset = 0f
+        var direction = false
+        val view = recyclerView.layoutManager.findViewByPosition(position)
+        view?.let {
+            val container = it.findViewById<LinearLayout>(R.id.ruler_event)
+            if(container.childCount > 0) {
+                Timber.d("getSmallestOffset(), event count=${container.childCount}")
+                container.forEachChild {
+                    val offset = if(currentX > it.x) {
+                        currentX - it.x
+                    } else {
+                        it.x - currentX
+                    }
+
+                    direction = Math.abs(it.x) > Math.abs(currentX)
+                    if(changeOffset == 0f || Math.abs(changeOffset) > Math.abs(offset)) {
+                        changeOffset = offset
+                    }
+                }
+            }
+        }
+
+        Timber.d("getSmallestOffset(), direction=$direction, changeOffset=$changeOffset")
+        return if(direction) changeOffset else -changeOffset
     }
 
     fun getLiveOffset(): Float {

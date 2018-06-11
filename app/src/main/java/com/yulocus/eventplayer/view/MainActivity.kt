@@ -1,6 +1,7 @@
 package com.yulocus.eventplayer.view
 
 import android.content.Context
+import android.text.method.Touch.scrollTo
 import android.view.View
 import com.jarvanmo.exoplayerview.media.SimpleMediaSource
 import com.yulocus.eventplayer.R
@@ -68,9 +69,11 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
         val timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                recycler_view.initRuler(this@MainActivity)
                 // load events
                 presenter.loadEvents()
+                runOnUiThread({
+                    recycler_view.initRuler(this@MainActivity)
+                })
             }
         }, 0, REFRESH_TIME)
     }
@@ -95,6 +98,8 @@ class MainActivity : MvpActivity<MainPresenter>(), MainContract.View {
 
     override fun showEvents(list: MutableList<Alert>) {
         recycler_view.updateEvents(list)
+        // scroll to live dot
+        recycler_view.scrollToLive()
     }
 
     override fun onStart() {

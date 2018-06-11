@@ -17,7 +17,6 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
 
     private val adapter by lazy { RulerAdapter(context) }
     private var callback: EventCallback? = null
-    private var liveOffset = 0
 
     fun initRuler(context: Context) {
         val itemWidth = context.resources.getDimensionPixelSize(R.dimen.height_80)
@@ -33,8 +32,6 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
         // set adapter
         setAdapter(adapter)
         addItemDecoration(RulerItemDecoration())
-        // draw and scroll to live dot
-        liveOffset = adapter.scrollToLive(manager)
 
         // build ruler size
         val params = RelativeLayout.LayoutParams(controllerWidth, controllerHeight)
@@ -44,6 +41,13 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
 
         removeOnScrollListener(scrollListener)
         addOnScrollListener(scrollListener)
+    }
+
+    fun scrollToLive() {
+        val padding = context.resources.getDimensionPixelSize(R.dimen.height_5)
+        val offset = adapter.getLiveOffset().toInt()
+        val itemWidth = context.resources.getDimensionPixelSize(R.dimen.height_80)
+        smoothScrollBy(offset - itemWidth + padding, 0)
     }
 
     fun updateEvents(list: MutableList<Alert>) {
@@ -75,12 +79,12 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
                 scrollX += dx
 
                 // calculate event position
-                val position = ((Math.abs(scrollX + liveOffset)) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
+                val position = (Math.abs(scrollX) / context.resources.getDimensionPixelSize(R.dimen.height_80)).toInt()
                 if(position != currentPosition) {
                     eventX = 0f
                     currentPosition = position
                 } else {
-                    eventX = (scrollX.toFloat() + liveOffset) % context.resources.getDimensionPixelSize(R.dimen.height_80).toLong()
+                    eventX = scrollX.toFloat() % context.resources.getDimensionPixelSize(R.dimen.height_80).toLong()
                 }
 
                 Timber.d("get scrollX=$scrollX, eventX=$eventX, position=$position")
@@ -93,14 +97,21 @@ class RulerRecyclerView(context: Context, attrs: AttributeSet?): RecyclerView(co
             val view = recyclerView.layoutManager.findViewByPosition(currentPosition)
             view?.let {
                 val container = it.findViewById<LinearLayout>(R.id.ruler_event)
+                var currentX = 0f
+                var match = false
                 if(container.childCount > 0) {
                     container.forEachChild {
-                        val currentX = itemWidth - Math.abs(eventX) - padding
+                        currentX = itemWidth - Math.abs(eventX) - padding
                         if(it.x >= currentX - 10 && it.x <= currentX + 10) { // in range
                             Timber.d("find eventX=$eventX, x=${it.x}")
                             it.tag?.let { callback?.setEvent(it as Alert) }
+                            match = true
                         }
                     }
+                }
+
+                if(!match) {
+                    adapter.scrollToClosestEvent(recyclerView, currentPosition, currentX)
                 }
             }
         }
